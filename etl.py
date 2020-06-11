@@ -6,6 +6,17 @@ from sql_queries import *
 
 
 def process_song_file(cur, filepath):
+    """
+    Description: This function used to read log files and populate two dim tabels (songs, artists).
+
+    Arguments: 
+        cur: cursor for running PostgreSql queries 
+        filepath: log data file path. 
+
+    Returns:
+        None
+    """
+    
     # open song file
     df = pd.read_json(filepath, lines=True)
 
@@ -19,6 +30,20 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
+    """
+    Description: This function used to read log files and populate two build 3 tabels:
+    1. time table: by converting timestamp in ms to diffrent parts of the time.
+    2. users table: loop over all users and update
+    3. fact table - songplays: by query dim tables and join them. include timestamp converting from ms to PostgreSql format.
+
+    Arguments: 
+        cur: cursor for running PostgreSql queries 
+        filepath: log data file path. 
+
+    Returns:
+        None
+    """
+    
     # open log file
     df = pd.read_json(filepath, lines=True)
 
@@ -62,6 +87,19 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
+    """
+    Description: function to process all the files in the data folder, by using the inserting functions. 
+
+    Arguments: 
+        cur: cursor for running PostgreSql queries
+        conn: connection for postgres db
+        filepath: log data file path
+        func: a function, for reading and inserting the data from the logs
+
+    Returns:
+        None
+    """
+    
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -81,6 +119,16 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    """
+    Description: running the ETL process, by call process_data function.
+
+    Arguments: 
+        None
+
+    Returns:
+        None
+    """
+    
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 
